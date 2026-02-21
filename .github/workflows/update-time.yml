@@ -1,0 +1,24 @@
+name: Update Time
+
+on:
+  schedule:
+    - cron: '* * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-time:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Write current time
+        run: |
+          TZ='America/Chicago' date '+%A, %B %-d, %Y at %I:%M:%S %p CST' > time.txt
+          
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add time.txt
+          git commit -m "Update time" || exit 0
+          git push
